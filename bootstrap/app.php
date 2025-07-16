@@ -3,14 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Http\Middleware\HandleCors;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -19,17 +11,24 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        // Tambahkan semua middleware global di sini
-        $middleware->append(HandleCors::class);
-        $middleware->append(EnsureFrontendRequestsAreStateful::class);
-        $middleware->append(EncryptCookies::class);
-        $middleware->append(AddQueuedCookiesToResponse::class);
-        $middleware->append(StartSession::class);
-        $middleware->append(ShareErrorsFromSession::class);
-        $middleware->append(VerifyCsrfToken::class);
-        $middleware->append(SubstituteBindings::class);
+    ->withMiddleware(function (Middleware $middleware) {
+
+        // Middleware ini HANYA akan berjalan untuk grup 'web'
+        // (Contoh: /admin, /, dsb. yang ada di routes/web.php)
+        $middleware->web(append: [
+            \Illuminate\Cookie\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ]);
+
+        $middleware->api(append: [
+            // Jika Anda butuh otentikasi SPA dengan Sanctum, aktifkan baris ini
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

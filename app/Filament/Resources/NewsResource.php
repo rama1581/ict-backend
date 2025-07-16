@@ -33,7 +33,7 @@ class NewsResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('thumbnail')->width(60),
+                ImageColumn::make('thumbnail')->width(60)->simpleLightbox(),
                 TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('created_at')->dateTime('d M Y'),
             ])

@@ -10,6 +10,7 @@ class News extends Model
 
     public function getThumbnailUrlAttribute()
     {
-        return $this->thumbnail ? asset('storage/' . $this->thumbnail) : null;
+    return $this->thumbnail ? asset('storage/news-thumbnails/' . $this->thumbnail) : null;
     }
+
 }

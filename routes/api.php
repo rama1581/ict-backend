@@ -37,7 +37,7 @@ Route::get('/config/maps', function () {
 });
 
 Route::get('/location/school', function () {
-    $location = \App\Models\Location::where('name', 'Yayasan Taruna Bakti')->first();
+    $location = \App\Models\Location::all()->first();
     
     return response()->json($location);
 });

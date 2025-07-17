@@ -83,6 +83,7 @@ return [
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'Maps_api_key' => env('Maps_API_KEY'),
 
     /*
     |--------------------------------------------------------------------------
@@ -96,6 +97,7 @@ return [
     */
 
     'cipher' => 'AES-256-CBC',
+    
 
     'key' => env('APP_KEY'),
 

@@ -13,6 +13,8 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
+use Filament\Forms\Set;      // <-- 1. Tambahkan ini
+use Illuminate\Support\Str;   // <-- 2. Tambahkan ini
 
 class NewsResource extends Resource
 {
@@ -23,9 +25,22 @@ class NewsResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->required()->maxLength(255),
+                // 3. Tambahkan logika untuk mengisi slug secara otomatis
+                TextInput::make('title')
+                    ->required()
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
+
+                // 4. Tambahkan field untuk slug
+                TextInput::make('slug')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true),
+                
                 FileUpload::make('thumbnail')->image()->directory('news-thumbnails'),
-                RichEditor::make('content')->required(),
+                FileUpload::make('images')->multiple()->image()->directory('news-images'), // Jika Anda masih pakai 'images'
+                RichEditor::make('content')->required()->columnSpanFull(),
             ]);
     }
 
@@ -33,7 +48,7 @@ class NewsResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('thumbnail')->width(60)->simpleLightbox(),
+                ImageColumn::make('thumbnail')->width(60),
                 TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('created_at')->dateTime('d M Y'),
             ])

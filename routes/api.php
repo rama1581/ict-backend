@@ -27,6 +27,11 @@ Route::get('/posts/{post:slug}', [PostController::class, 'show']);
 Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{news:slug}', [NewsController::class, 'show']);
 
+Route::get('/news/latest', function () {
+    $latestNews = \App\Models\News::with('author')->latest()->first();
+    return response()->json($latestNews);
+});
+
 // --- Rute untuk Konfigurasi Aplikasi ---
 
 // Rute untuk mengambil Google Maps API Key secara aman

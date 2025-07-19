@@ -28,7 +28,9 @@ Route::get('/news', [NewsController::class, 'index']);
 Route::get('/news/{news:slug}', [NewsController::class, 'show']);
 
 Route::get('/news/latest', function () {
-    $latestNews = \App\Models\News::with('author')->latest()->first();
+    // Hapus with('author') karena tabel news tidak punya relasi itu
+    $latestNews = \App\Models\News::latest()->first();
+    
     return response()->json($latestNews);
 });
 

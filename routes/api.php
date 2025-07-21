@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\NewsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\RequestForm;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,6 +50,20 @@ Route::get('/location/school', function () {
     return response()->json($location);
 });
 
+
+
+Route::post('/requests', function (Request $request) {
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'category' => 'required|string',
+        'message' => 'required|string',
+    ]);
+
+    RequestForm::create($validated);
+
+    return response()->json(['message' => 'Request submitted successfully'], 201);
+}); 
 
 // Rute untuk testing koneksi dasar
 Route::get('/test', function () {

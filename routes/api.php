@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\NewsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\RequestForm;
+use Illuminate\Validation\Rule;
+use App\Models\ServiceStatus;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,15 +57,30 @@ Route::get('/location/school', function () {
 Route::post('/requests', function (Request $request) {
     $validated = $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
+        // 👇 2. Modifikasi aturan validasi email
+        'email' => [
+            'required',
+            'email',
+            'max:255',
+            Rule::unique('request_forms')->where(function ($query) {
+                // Hanya tolak jika email sudah ada DAN statusnya 'pending'
+                return $query->where('status', 'pending');
+            }),
+        ],
         'category' => 'required|string',
         'message' => 'required|string',
+    ], [
+        // 3. Tambahkan pesan error kustom (opsional)
+        'email.unique' => 'Anda sudah memiliki pengajuan yang sedang diproses. Mohon tunggu.'
     ]);
 
     RequestForm::create($validated);
-
     return response()->json(['message' => 'Request submitted successfully'], 201);
-}); 
+});
+
+Route::get('/service-status', function () {
+    return response()->json(ServiceStatus::all());
+});
 
 // Rute untuk testing koneksi dasar
 Route::get('/test', function () {

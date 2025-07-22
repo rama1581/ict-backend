@@ -39,7 +39,7 @@ class NewsResource extends Resource
                     ->unique(ignoreRecord: true),
                 
                 FileUpload::make('thumbnail')->image()->directory('news-thumbnails'),
-                FileUpload::make('images')->multiple()->image()->directory('news-images'), // Jika Anda masih pakai 'images'
+                FileUpload::make('images')->multiple()->image()->directory('news-images'), 
                 RichEditor::make('content')->required()->columnSpanFull(),
             ]);
     }
@@ -48,9 +48,9 @@ class NewsResource extends Resource
     {
         return $table
             ->columns([
-                ImageColumn::make('thumbnail')->width(60),
                 TextColumn::make('title')->searchable()->sortable(),
-                TextColumn::make('created_at')->dateTime('d M Y'),
+                TextColumn::make('created_at')->dateTime('d M Y, H:i'),
+                ImageColumn::make('thumbnail')->width(60),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -13,21 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
 
-        // Middleware ini HANYA akan berjalan untuk grup 'web'
-        // (Contoh: /admin, /, dsb. yang ada di routes/web.php)
-        $middleware->web(append: [
-            \Illuminate\Cookie\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ]);
-
-        $middleware->api(append: [
-            // Jika Anda butuh otentikasi SPA dengan Sanctum, aktifkan baris ini
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        ]);
+        $middleware->trustProxies("*");
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

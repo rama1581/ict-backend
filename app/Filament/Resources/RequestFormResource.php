@@ -42,7 +42,8 @@ class RequestFormResource extends Resource
                 TextColumn::make('name')->searchable(),
                 TextColumn::make('email'),
                 TextColumn::make('category'),
-                TextColumn::make('created_at')->dateTime('d M Y - H:i'),
+                TextColumn::make('message')->limit(50)->searchable(),
+                TextColumn::make('created_at')->dateTime('d M Y, H:i'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

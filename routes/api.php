@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\NewsController;
+use App\Http\Controllers\Api\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\RequestForm;
 use Illuminate\Validation\Rule;
 use App\Models\ServiceStatus;
-
+use Illuminate\Support\Str;
+use App\Models\TicketProgress;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -57,30 +59,73 @@ Route::get('/location/school', function () {
 Route::post('/requests', function (Request $request) {
     $validated = $request->validate([
         'name' => 'required|string|max:255',
-        // 👇 2. Modifikasi aturan validasi email
         'email' => [
             'required',
             'email',
             'max:255',
             Rule::unique('request_forms')->where(function ($query) {
-                // Hanya tolak jika email sudah ada DAN statusnya 'pending'
                 return $query->where('status', 'pending');
             }),
         ],
         'category' => 'required|string',
         'message' => 'required|string',
     ], [
-        // 3. Tambahkan pesan error kustom (opsional)
         'email.unique' => 'Anda sudah memiliki pengajuan yang sedang diproses. Mohon tunggu.'
     ]);
 
-    RequestForm::create($validated);
-    return response()->json(['message' => 'Request submitted successfully'], 201);
+    // ✅ Generate ticket_code dan status
+    $validated['ticket_code'] = strtoupper(Str::random(8));
+    $validated['status'] = 'pending';
+
+    // ✅ Simpan ke database
+    $form = RequestForm::create($validated);
+
+    // ✅ Kirim response ke frontend
+    return response()->json([
+        'message' => 'Request submitted successfully',
+        'ticket_code' => $form->ticket_code,
+        'status' => $form->status,
+    ], 201);
+});
+
+Route::get('/requests/status/{ticket_code}', function ($ticket_code) {
+    $request = RequestForm::where('ticket_code', $ticket_code)
+        ->with(['progresses' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }])
+        ->first();
+
+    if (! $request) {
+        return response()->json(['message' => 'Tiket tidak ditemukan.'], 404);
+    }
+
+    return response()->json([
+        'ticket_code' => $request->ticket_code,
+        'name'        => $request->name,
+        'category'    => $request->category,
+        'message'     => $request->message,
+        'status'      => $request->status,
+        'created_at'  => $request->created_at->toDateTimeString(),
+        'progresses'  => $request->progresses->map(function ($p) {
+            return [
+                'id'         => $p->id,
+                'status'     => $p->status,
+                'note'       => $p->note,
+                'created_at' => $p->created_at->toDateTimeString(),
+            ];
+        }),
+    ]);
 });
 
 Route::get('/service-status', function () {
     return response()->json(ServiceStatus::all());
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::post('/messages', [MessageController::class, 'store']);
+});
+
 
 // Rute untuk testing koneksi dasar
 Route::get('/test', function () {

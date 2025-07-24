@@ -20,4 +20,9 @@ class ServiceStatus extends Model
         'status',
         'description',
     ];
+
+    public function logs()
+    {
+        return $this->hasMany(ServiceStatusLog::class, 'service_status_id');
+    }
 }

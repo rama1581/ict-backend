@@ -9,5 +9,10 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description']; // ✅ tambahkan kolom-kolom yang bisa diisi
+    protected $fillable = ['title', 'description', 'status']; // ✅ tambahkan kolom-kolom yang bisa diisi
+
+    public function statusLogs()
+    {
+        return $this->hasMany(ServiceStatusLog::class)->latest('logged_at');
+    }
 }

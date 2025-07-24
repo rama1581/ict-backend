@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\NewsController;
-use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\ServiceStatusLogController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\RequestForm;
@@ -10,6 +10,8 @@ use Illuminate\Validation\Rule;
 use App\Models\ServiceStatus;
 use Illuminate\Support\Str;
 use App\Models\TicketProgress;
+use App\Models\Message;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -121,10 +123,7 @@ Route::get('/service-status', function () {
     return response()->json(ServiceStatus::all());
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/messages', [MessageController::class, 'index']);
-    Route::post('/messages', [MessageController::class, 'store']);
-});
+Route::get('/service-statuses/{id}/logs', [ServiceStatusLogController::class, 'index']);
 
 
 // Rute untuk testing koneksi dasar

@@ -25,6 +25,13 @@ class ServiceResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')->required(),
                 Forms\Components\Textarea::make('description'),
+                Forms\Components\Select::make('status')
+                ->required()
+                ->options([
+                    'active' => 'Active',
+                    'inactive' => 'Inactive',
+                    'maintenance' => 'Maintenance',
+                ]),
             ]);
     }
 

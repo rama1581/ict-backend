@@ -11,6 +11,7 @@ use App\Models\ServiceStatus;
 use Illuminate\Support\Str;
 use App\Models\TicketProgress;
 use App\Models\Message;
+use App\Http\Controllers\Api\HomePageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,6 +126,10 @@ Route::get('/service-status', function () {
 
 Route::get('/service-statuses/{id}/logs', [ServiceStatusLogController::class, 'index']);
 
+Route::get('/page-content/home', [HomePageController::class, 'getHeroContent']);
+Route::get('/services', [HomePageController::class, 'getServices']);
+Route::get('/support-links', [HomePageController::class, 'getSupportLinks']);
+Route::get('/slideshow-images', [HomePageController::class, 'getSlideshowImages']);
 
 // Rute untuk testing koneksi dasar
 Route::get('/test', function () {

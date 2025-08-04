@@ -25,13 +25,16 @@ class ServiceResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')->required(),
                 Forms\Components\Textarea::make('description'),
-                Forms\Components\Select::make('status')
-                ->required()
+                Forms\Components\TextInput::make('link')->required()->placeholder('/layanan/jaringan'),
+                Forms\Components\Select::make('icon')
                 ->options([
-                    'active' => 'Active',
-                    'inactive' => 'Inactive',
-                    'maintenance' => 'Maintenance',
-                ]),
+                    'Network' => 'Jaringan',
+                    'MailOpen' => 'Email',
+                    'AppWindow' => 'Akademik',
+                    'LifeBuoy' => 'Bantuan Teknis',
+                ])
+                ->required()
+                ->label('Ikon'),
             ]);
     }
 

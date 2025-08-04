@@ -9,7 +9,7 @@ class Service extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'status']; // ✅ tambahkan kolom-kolom yang bisa diisi
+    protected $fillable = ['icon','title', 'description', 'link']; // ✅ tambahkan kolom-kolom yang bisa diisi
 
     public function statusLogs()
     {

@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::create('services', function (Blueprint $table) {
+    Schema::create('slideshow_images', function (Blueprint $table) {
         $table->id();
-        $table->string('icon'); // Untuk menyimpan nama ikon, cth: "Network"
-        $table->string('title');
-        $table->text('description');
-        $table->string('link');
+        $table->string('image_path'); // Menyimpan path file gambar
+        $table->boolean('is_active')->default(true); // Untuk mengaktifkan/menonaktifkan gambar
         $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('slideshow_images');
     }
 };

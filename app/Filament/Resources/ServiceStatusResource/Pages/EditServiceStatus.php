@@ -16,4 +16,17 @@ class EditServiceStatus extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        // $this->record berisi data ServiceStatus yang baru saja di-update.
+        $serviceStatus = $this->record;
+
+        // Buat log baru menggunakan relasi `logs()` yang sudah ada di Model.
+        // Laravel akan otomatis mengisi `service_status_id`.
+        $serviceStatus->logs()->create([
+            'description' => 'Status diubah menjadi "' . $serviceStatus->status . '"',
+            'logged_at' => now(),
+        ]);
+    }
 }

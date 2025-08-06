@@ -18,6 +18,7 @@ class RequestFormResource extends Resource
 {
     protected static ?string $model = RequestForm::class;
     protected static ?string $navigationIcon = 'heroicon-o-inbox';
+    protected static ?string $navigationGroup = 'Manajemen Konten';
 
     public static function form(Forms\Form $form): Forms\Form
     {

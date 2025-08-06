@@ -12,6 +12,8 @@ use Illuminate\Support\Str;
 use App\Models\TicketProgress;
 use App\Models\Message;
 use App\Http\Controllers\Api\HomePageController;
+use App\Http\Controllers\Api\GuideController;
+use App\Http\Controllers\Api\ServicePageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,14 +35,10 @@ Route::get('/posts/{post:slug}', [PostController::class, 'show']);
 
 // --- Rute untuk Resource "News" ---
 Route::get('/news', [NewsController::class, 'index']);
+Route::get('/news/latest', [NewsController::class, 'latest']);
+Route::get('/news/popular', [NewsController::class, 'popular']);
 Route::get('/news/{news:slug}', [NewsController::class, 'show']);
 
-Route::get('/news/latest', function () {
-    // Hapus with('author') karena tabel news tidak punya relasi itu
-    $latestNews = \App\Models\News::latest()->first();
-    
-    return response()->json($latestNews);
-});
 
 // --- Rute untuk Konfigurasi Aplikasi ---
 
@@ -131,6 +129,7 @@ Route::get('/services', [HomePageController::class, 'getServices']);
 Route::get('/support-links', [HomePageController::class, 'getSupportLinks']);
 Route::get('/slideshow-images', [HomePageController::class, 'getSlideshowImages']);
 
+Route::get('/guides', [GuideController::class, 'index']);
 // Rute untuk testing koneksi dasar
 Route::get('/test', function () {
     return response()->json([

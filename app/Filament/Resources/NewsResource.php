@@ -20,6 +20,7 @@ class NewsResource extends Resource
 {
     protected static ?string $model = News::class;
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';
+    protected static ?string $navigationGroup = 'Manajemen Konten';
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -41,6 +42,9 @@ class NewsResource extends Resource
                 FileUpload::make('thumbnail')->image()->directory('news-thumbnails'),
                 FileUpload::make('images')->multiple()->image()->directory('news-images'), 
                 RichEditor::make('content')->required()->columnSpanFull(),
+                Forms\Components\Toggle::make('is_published')
+                    ->label('Publikasikan Berita Ini')
+                    ->default(true),
             ]);
     }
 

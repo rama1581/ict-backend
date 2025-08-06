@@ -19,6 +19,8 @@ class HeroContentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Manajemen Konten';
+
     public static function form(Form $form): Form
     {
     return $form
@@ -32,7 +34,15 @@ class HeroContentResource extends Resource
     {
         return $table
             ->columns([
-                //
+                // Tampilkan kolom 'title'
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Judul')
+                    ->searchable(),
+
+                // Tampilkan kolom 'description', batasi 50 karakter
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Deskripsi')
+                    ->limit(50),
             ])
             ->filters([
                 //

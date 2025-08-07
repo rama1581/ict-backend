@@ -7,14 +7,15 @@ use App\Models\News;
 use Filament\Forms;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
-use Filament\Forms\Set;      // <-- 1. Tambahkan ini
-use Illuminate\Support\Str;   // <-- 2. Tambahkan ini
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
+use FilamentTiptapEditor\TiptapEditor;
+use FilamentTiptapEditor\Enums\TiptapOutput;
 
 class NewsResource extends Resource
 {
@@ -26,22 +27,36 @@ class NewsResource extends Resource
     {
         return $form
             ->schema([
-                // 3. Tambahkan logika untuk mengisi slug secara otomatis
                 TextInput::make('title')
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
-                // 4. Tambahkan field untuk slug
                 TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-                
-                FileUpload::make('thumbnail')->image()->directory('news-thumbnails'),
-                FileUpload::make('images')->multiple()->image()->directory('news-images'), 
-                RichEditor::make('content')->required()->columnSpanFull(),
+                    ->unique(News::class, 'slug', ignoreRecord: true),
+
+                FileUpload::make('thumbnail')
+                    ->image()
+                    ->directory('news-thumbnails'),
+
+                FileUpload::make('images')
+                    ->multiple()
+                    ->image()
+                    ->directory('news-images'),
+
+                TiptapEditor::make('content')
+                    ->label('Konten Berita')
+                    ->profile('default') // profil default sudah support image upload
+                    ->disk('public')
+                    ->directory('news-content-images') // sesuaikan jika perlu
+                    ->visibility('public')
+                    ->output(TiptapOutput::Html)
+                    ->required()
+                    ->columnSpanFull(),
+
                 Forms\Components\Toggle::make('is_published')
                     ->label('Publikasikan Berita Ini')
                     ->default(true),

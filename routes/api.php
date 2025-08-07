@@ -130,6 +130,7 @@ Route::get('/support-links', [HomePageController::class, 'getSupportLinks']);
 Route::get('/slideshow-images', [HomePageController::class, 'getSlideshowImages']);
 
 Route::get('/guides', [GuideController::class, 'index']);
+Route::get('/guides/{slug}', [GuideController::class, 'show']);
 // Rute untuk testing koneksi dasar
 Route::get('/test', function () {
     return response()->json([

@@ -1,16 +1,18 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use HasFactory;
 
 class Guide extends Model
 {
-     protected $fillable = [
+    use HasFactory;
+
+    protected $fillable = [
         'title',
-        'link',
+        'slug',
         'category',
-        'icon',
+        'thumbnail',
+        'content',
     ];
 }

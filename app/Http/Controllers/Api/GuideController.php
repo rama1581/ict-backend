@@ -7,20 +7,28 @@ use Illuminate\Http\Request;
 
 class GuideController extends Controller
 {
+    /**
+     * Menampilkan daftar panduan, dengan fitur pencarian.
+     */
     public function index(Request $request)
     {
-        // Mengambil kata kunci pencarian dari parameter URL (?search=...)
-        $query = $request->input('search');
-
         $guides = Guide::query()
-            ->when($query, function ($q) use ($query) {
-                // Mencari di kolom 'title' atau 'category'
-                return $q->where('title', 'like', "%{$query}%")
-                         ->orWhere('category', 'like', "%{$query}%");
+            ->when($request->search, function ($query, $search) {
+                return $query->where('title', 'like', "%{$search}%")
+                             ->orWhere('category', 'like', "%{$search}%");
             })
-            ->latest() // Urutkan dari yang terbaru
+            ->latest()
             ->get();
 
         return response()->json(['data' => $guides]);
+    }
+
+    /**
+     * Menampilkan detail satu panduan berdasarkan slug.
+     */
+    public function show(string $slug)
+    {
+        $guide = Guide::where('slug', $slug)->firstOrFail();
+        return response()->json($guide);
     }
 }

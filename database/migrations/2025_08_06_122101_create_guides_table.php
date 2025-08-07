@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('guides', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('link');
+            $table->string('slug')->unique();
             $table->string('category');
-            $table->string('icon'); // Untuk menyimpan nama ikon, cth: "FaWifi"
+            $table->string('thumbnail')->nullable(); // Tambahkan thumbnail
+            $table->longText('content');
             $table->timestamps();
         });
     }
